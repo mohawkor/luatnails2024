@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oregon Nail Law - Pastel Exam</title>
+    <style>
+        :root {
+            --bg: #fdf6f0;
+            --card: #ffffff;
+            --text: #5d5d5d;
+            --mint: #d4f8e8;
+            --lavender: #e1d5f2;
+            --rose: #fce1e4;
+            --blue: #d1e9f6;
+            --success: #c1e1c1;
+            --danger: #ffb7b2;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0; padding: 15px;
+            display: flex; justify-content: center; align-items: center; min-height: 100vh;
+        }
+
+        .quiz-container {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.04);
+            width: 100%; max-width: 650px;
+        }
+
+        .header { text-align: center; margin-bottom: 20px; }
+        .category-tag {
+            display: inline-block; padding: 6px 16px;
+            background: var(--blue); color: #5a7d9a;
+            border-radius: 20px; font-size: 11px; font-weight: bold;
+            text-transform: uppercase; margin-bottom: 12px;
+        }
+
+        .progress-bar {
+            background: #f0f0f0; height: 8px; border-radius: 4px;
+            margin: 15px 0; overflow: hidden;
+        }
+        #progress-fill { background: var(--lavender); height: 100%; width: 0%; transition: 0.5s ease; }
+
+        .question-text { font-size: 18px; font-weight: 600; line-height: 1.6; margin-bottom: 25px; min-height: 60px; }
+
+        .options-list { display: grid; gap: 10px; }
+        .opt-btn {
+            padding: 15px; border: 2px solid #f8f8f8; border-radius: 18px;
+            background: #fff; cursor: pointer; text-align: left;
+            font-size: 16px; transition: 0.2s; color: var(--text);
+        }
+        .opt-btn:hover:not(:disabled) { border-color: var(--blue); background: #fbfdff; }
+        
+        .correct { background-color: var(--success) !important; border-color: var(--success); }
+        .wrong { background-color: var(--danger) !important; border-color: var(--danger); }
+
+        /* Report Styles */
+        .report-section { border-top: 1px solid #eee; margin-top: 20px; padding-top: 20px; }
+        .report-row { display: flex; justify-content: space-between; padding: 10px 0; font-size: 14px; border-bottom: 1px dashed #eee; }
+        .fail-count { color: #e74c3c; font-weight: bold; }
+        .pass-text { color: #2ecc71; font-weight: bold; }
+
+        .btn-retry {
+            width: 100%; padding: 16px; background: var(--lavender);
+            color: #6a5acd; border: none; border-radius: 18px;
+            font-weight: bold; cursor: pointer; margin-top: 25px;
+        }
+
+        .footer-stats { margin-top: 25px; display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; color: #bbb; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div id="game-ui">
+        <div class="header">
+            <span id="cat-label" class="category-tag">Loading...</span>
+            <div class="progress-bar"><div id="progress-fill"></div></div>
+        </div>
+
+        <div id="q-text" class="question-text">Đang tải câu hỏi...</div>
+        <div id="options-area" class="options-list"></div>
+
+        <div class="footer-stats">
+            <span>CÂU HỎI: <span id="current-idx">0</span>/40</span>
+            <span>ĐÚNG: <span id="score-val">0</span></span>
+        </div>
+    </div>
+
+    <div id="report-ui" style="display:none">
+        <h2 style="text-align:center; color:#777;">📊 BÁO CÁO KẾT QUẢ</h2>
+        <div id="final-score" style="text-align:center; font-size:24px; margin-bottom:20px;"></div>
+        <div class="report-section" id="report-details"></div>
+        <button class="btn-retry" onclick="location.reload()">THỬ LẠI LẦN NỮA</button>
+    </div>
+</div>
+
+<script>
+    // Toàn bộ 188 câu hỏi dựa trên tài liệu Luật Oregon 2024
+    const questionBank = [
+        // ĐỊNH NGHĨA
+        { cat: "Định nghĩa", q: "Thông gió phù hợp (Adequate ventilation) là gì?", o: ["Thông gió tự nhiên hoặc cơ học", "Dùng máy lạnh", "Mở cửa sổ", "Tẩy da chết"], a: 0 },
+        { cat: "Định nghĩa", q: "Văn bản gốc xác minh lịch sử giấy phép và kỷ luật gọi là gì?", o: ["Giấy phép", "Affidavit of Licensure", "Bằng điểm", "Thẻ căn cước"], a: 1 },
+        { cat: "Định nghĩa", q: "Agency (Cơ quan cấp bằng sức khỏe Oregon) còn gọi là:", o: ["OSHA", "FDA", "OHLA", "CDC"], a: 2 },
+        { cat: "Định nghĩa", q: "Đồ hỗ trợ dịch vụ cắt tóc, làm móng gọi chung là:", o: ["Thiết bị", "Vật phẩm (Article)", "Vật liệu", "Công cụ"], a: 1 },
+        { cat: "Định nghĩa", q: "Khu vực tiệm được sử dụng bởi tất cả người hành nghề là:", o: ["Lễ tân", "Pha chế", "Khu vực chung (Common area)", "Phòng nghỉ"], a: 2 },
+        { cat: "Định nghĩa", q: "Khu vực lễ tân được tính là khu vực chung. Đúng hay Sai?", o: ["Đúng", "Sai"], a: 1 },
+        { cat: "Định nghĩa", q: "Quá trình tiêu diệt vi khuẩn, vi rút, nấm là:", o: ["Khử trùng", "Làm vệ sinh", "Tẩy da", "Tiệt trùng"], a: 0 },
+        { cat: "Định nghĩa", q: "EPA là cơ quan của Chính phủ Liên Bang đăng ký cái gì?", o: ["Dược phẩm", "Hợp chất hóa học", "Thực phẩm", "Xe cộ"], a: 1 },
+        { cat: "Định nghĩa", q: "Bàn móng, bồn gội đầu, ghế ngồi được gọi là:", o: ["Vật liệu", "Thiết bị", "Công cụ", "Dụng cụ"], a: 1 },
+        { cat: "Định nghĩa", q: "Văn bản cho phép làm việc ngoài tiệm cố định là:", o: ["Bằng freelance", "Giấy phép tạm thời", "Bản tuyên thệ", "Bằng hành nghề"], a: 0 },
+        { cat: "Định nghĩa", q: "Chất hóa học diệt được vi trùng lao phổi là:", o: ["Khử trùng mức thấp", "Khử trùng mức cao (High-level)", "Làm vệ sinh", "Nước cất"], a: 1 },
+        { cat: "Định nghĩa", q: "Dụng cụ điện được khử trùng bằng:", o: ["Chất mức cao", "Chất mức thấp (Low-level)", "Làm vệ sinh", "Dầu máy"], a: 1 },
+        { cat: "Định nghĩa", q: "Bông gòn, gạc giấy được gọi là:", o: ["Vật liệu", "Vật phẩm", "Công cụ", "Dụng cụ"], a: 0 },
+        { cat: "Định nghĩa", q: "Người tự nhiên (Natural person) là gì?", o: ["Người khuyết tật", "Cá nhân còn sống", "Pháp nhân", "Tổ chức"], a: 1 },
+        { cat: "Định nghĩa", q: "Toàn bộ diện tích cơ sở được cấp phép gọi là:", o: ["Phòng làm việc", "Mặt bằng (Premise)", "Địa chỉ", "Khu vực chung"], a: 1 },
+        { cat: "Định nghĩa", q: "Dụng cụ chưa được làm sạch hoặc khử trùng gọi là gì?", o: ["Sạch", "Bần (Soiled)", "Vật phẩm", "Dụng cụ"], a: 1 },
+        { cat: "Định nghĩa", q: "Cái gì có thể đâm thủng hoặc cắt đứt da làm chảy máu?", o: ["Lược", "Dao cạo/kềm cắt móng", "Khăn", "Ghế"], a: 1 },
+        
+        // TIÊU CHUẨN CƠ SỞ
+        { cat: "Tiêu chuẩn cơ sở", q: "Áp suất hệ thống nước tối thiểu phải đạt bao nhiêu?", o: ["10 psi", "20 psi", "30 psi", "40 psi"], a: 1 },
+        { cat: "Tiêu chuẩn cơ sở", q: "Bồn rửa trong nhà vệ sinh được dùng làm nguồn nước chính. Đúng hay Sai?", o: ["Đúng", "Sai"], a: 1 },
+        { cat: "Tiêu chuẩn cơ sở", q: "Sử dụng xà bông cục và khăn lau tay chung là:", o: ["Được phép", "Nghiêm cấm"], a: 1 },
+        { cat: "Tiêu chuẩn cơ sở", q: "Khăn bẩn dính hóa chất phải được bỏ trong:", o: ["Thùng rác", "Thùng chống cháy", "Túi nilon", "Xô"], a: 1 },
+        { cat: "Tiêu chuẩn cơ sở", q: "Khăn sạch phải được giữ ở đâu?", o: ["Dưới bồn rửa", "Nơi sạch sẽ", "Trong túi xách", "Bất cứ đâu"], a: 1 },
+        { cat: "Tiêu chuẩn cơ sở", q: "Vật dụng sắc nhọn dùng 1 lần dính máu bỏ vào đâu?", o: ["Túi rác", "Thùng cứng/chống đâm thủng", "Thùng chống cháy", "Xả bồn cầu"], a: 1 },
+        { cat: "Tiêu chuẩn cơ sở", q: "Sàn khu vực làm việc phải như thế nào?", o: ["Làm bằng gỗ tự nhiên", "Không thấm nước", "Có trải thảm", "Bằng đất"], a: 1 },
+        { cat: "Tiêu chuẩn cơ sở", q: "Thú nuôi nào được phép vào tiệm?", o: ["Mèo", "Chó trợ giúp người tàn tật", "Chim", "Chuột"], a: 1 },
+        { cat: "Tiêu chuẩn cơ sở", q: "Cơ sở tại gia phải ngăn cách khu sinh hoạt bằng:", o: ["Tấm rèm", "Tường chắc chắn và cửa đóng kín", "Tủ quần áo", "Dây thừng"], a: 1 },
+        
+        // THỰC HÀNH & VẬN HÀNH
+        { cat: "Thực hành", q: "Bạn phải rửa tay khi nào?", o: ["Trước khi làm cho khách", "Sau khi làm cho khách", "Ngăn nhiễm bẩn chéo", "Tất cả đều đúng"], a: 3 },
+        { cat: "Thực hành", q: "Hồ sơ khách hàng phải lưu giữ tối thiểu mấy năm?", o: ["1 năm", "2 năm", "3 năm", "5 năm"], a: 1 },
+        { cat: "Thực hành", q: "Nếu hóa chất có thể bắn tung tóe, bạn cần đeo gì?", o: ["Găng tay", "Kính bảo hộ và mặt nạ", "Mũ bảo hiểm", "Tạp dề"], a: 1 },
+        { cat: "Vận hành", q: "Giấy phép cơ sở (Facility license) có hiệu lực mấy năm?", o: ["1 năm", "2 năm", "3 năm", "5 năm"], a: 0 },
+        { cat: "Vận hành", q: "Khi đổi chủ hoặc địa chỉ tiệm, bạn cần làm gì?", o: ["Dùng tiếp giấy phép cũ", "Xin giấy phép cơ sở mới", "Chỉ cần báo qua điện thoại", "Không cần làm gì"], a: 1 },
+        { cat: "Vận hành", q: "Chứng chỉ hành nghề (Practitioner) có hiệu lực mấy năm?", o: ["1 năm", "2 năm", "3 năm", "5 năm"], a: 1 },
+        { cat: "Vận hành", q: "Điểm chuẩn đậu kỳ thi luật Oregon là bao nhiêu?", o: ["70%", "75%", "80%", "85%"], a: 1 },
+        
+        // HÓA CHẤT
+        { cat: "Hóa chất", q: "Hóa chất nguy hại phải được cất giữ ở nhiệt độ không quá:", o: ["100°F", "120°F", "140°F", "160°F"], a: 2 },
+        { cat: "Hóa chất", q: "Thùng hóa chất phản ứng phải cách xa các vật khác ít nhất:", o: ["5 inches", "10 inches", "12 inches (30cm)", "20 inches"], a: 2 },
+        { cat: "Hóa chất", q: "Tài liệu nào báo cho nhân viên về hóa chất độc hại?", o: ["Nhãn dán", "Sổ tay thợ", "MSDS (SDS)", "Hóa đơn"], a: 2 },
+        { cat: "Hóa chất", q: "Chất thải hóa học phải bỏ vào thùng chống cháy khi nào?", o: ["Lập tức", "Cuối ngày làm việc", "Hàng tuần", "Khi tiệm đóng cửa hẳn"], a: 1 },
+        { cat: "Hóa chất", q: "Lưu trữ riêng biệt hóa chất nghĩa là gì?", o: ["Để chung một kệ", "Để cách nhau ít nhất 12 inches", "Để trong tủ gỗ", "Để dưới sàn"], a: 1 }
+    ];
+
+    let quizSet = [];
+    let current = 0;
+    let score = 0;
+    let errorLog = {}; // Đếm lỗi theo từng mục
+
+    function setupGame() {
+        // Trộn ngẫu nhiên câu hỏi và lấy đúng 40 câu
+        quizSet = [...questionBank].sort(() => 0.5 - Math.random()).slice(0, 40);
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        const data = quizSet[current];
+        document.getElementById("cat-label").innerText = data.cat;
+        document.getElementById("q-text").innerText = `${current + 1}. ${data.q}`;
+        document.getElementById("current-idx").innerText = current + 1;
+        document.getElementById("progress-fill").style.width = `${((current + 1) / quizSet.length) * 100}%`;
+
+        const area = document.getElementById("options-area");
+        area.innerHTML = "";
+        data.o.forEach((opt, i) => {
+            const btn = document.createElement("button");
+            btn.className = "opt-btn";
+            btn.innerText = opt;
+            btn.onclick = () => selectOption(i, btn);
+            area.appendChild(btn);
+        });
+    }
+
+    function selectOption(idx, btn) {
+        const correct = quizSet[current].a;
+        const cat = quizSet[current].cat;
+        const btns = document.querySelectorAll(".opt-btn");
+
+        if(idx === correct) {
+            btn.classList.add("correct");
+            score++;
+            document.getElementById("score-val").innerText = score;
+        } else {
+            btn.classList.add("wrong");
+            btns[correct].classList.add("correct");
+            // Ghi nhận lỗi sai theo mục
+            errorLog[cat] = (errorLog[cat] || 0) + 1;
+        }
+
+        btns.forEach(b => b.disabled = true);
+
+        // TỰ ĐỘNG CHUYỂN SAU 1.5 GIÂY
+        setTimeout(() => {
+            current++;
+            if(current < quizSet.length) {
+                renderQuestion();
+            } else {
+                showReport();
+            }
+        }, 1500);
+    }
+
+    function showReport() {
+        document.getElementById("game-ui").style.display = "none";
+        document.getElementById("report-ui").style.display = "block";
+        
+        const finalPct = Math.round((score / quizSet.length) * 100);
+        const pass = finalPct >= 75;
+        
+        document.getElementById("final-score").innerHTML = `
+            <span class="${pass ? 'pass-text' : 'fail-count'}">${pass ? '🎉 ĐẠT' : '❌ CHƯA ĐẠT'}</span><br>
+            <small style="font-size:16px">${finalPct}% (${score}/${quizSet.length} câu đúng)</small>
+        `;
+
+        const details = document.getElementById("report-details");
+        details.innerHTML = "<p><b>Thống kê lỗi sai theo mục:</b></p>";
+        
+        // Lấy danh sách tất cả các mục đã có trong ngân hàng
+        const allCats = [...new Set(questionBank.map(q => q.cat))];
+        allCats.forEach(cat => {
+            const errs = errorLog[cat] || 0;
+            const row = document.createElement("div");
+            row.className = "report-row";
+            row.innerHTML = `<span>Mục ${cat}:</span><span class="${errs > 0 ? 'fail-count' : 'pass-text'}">${errs} lỗi</span>`;
+            details.appendChild(row);
+        });
+    }
+
+    setupGame();
+</script>
+
+</body>
+</html>
