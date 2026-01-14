@@ -3,72 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oregon Nail Law 2024 - Full 188 Qs</title>
+    <title>Oregon Nail Law 2024 - Pro UI</title>
     <style>
-        :root {
-            --bg: #fdfaf6; --card: #ffffff; --text: #5a5a5a;
-            --mint: #d4f8e8; --lavender: #e1d5f2; --blue: #d1e9f6;
-            --success: #c1e1c1; --danger: #ffb7b2; --accent: #6a5acd;
-        }
+		:root {
+    --primary: #C1E1C1;       /* Màu xanh lá pastel chính */
+    --primary-dark: #A8C8A8;  /* Màu xanh lá đậm hơn một chút để làm viền/chữ */
+    
+    --primary-light: #E8F5E8; /* Màu nền phụ nếu cần */
+    --correct: #2e7d32;
+    --correct-bg: #c8e6c9;
+    --wrong: #c62828;
+    --wrong-bg: #ffcdd2;
+    --bg: #f3faf3;            /* Đổi nền trang sang màu hơi xanh cho đồng bộ */
+    --text: #37474f;
+    --card-q: #fff9c4;
+}
+
         body {
-            font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--bg);
-            margin: 0; padding: 10px; display: flex; justify-content: center; align-items: center; min-height: 100vh;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
         }
-        .quiz-container {
-            background: var(--card); padding: 25px; border-radius: 25px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.03); width: 100%; max-width: 650px;
+
+        .container {
+            background: white;
+            max-width: 700px;
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s;
         }
-        .header { text-align: center; margin-bottom: 20px; }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 { margin: 0; font-size: 1.6em; text-transform: uppercase; }
+        .subtitle { font-size: 0.9em; opacity: 0.9; margin-top: 5px; font-weight: bold; }
+
+        
+		.stats {
+    display: flex;
+    justify-content: space-between;
+    background: #e1f2e1; /* Màu xanh lá rất nhạt để hợp với tiêu đề pastel */
+    padding: 12px 20px;
+    font-weight: bold;
+    color: #2e7d32;      /* Đổi màu chữ sang xanh đậm cho dễ đọc */
+}
+
+        .game-content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+
+        .question-card {
+            background: var(--card-q);
+            border: 2px solid #fff59d;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
         .category-tag {
-            display: inline-block; padding: 5px 15px; background: var(--lavender);
-            color: #6a5acd; border-radius: 20px; font-size: 11px; font-weight: bold;
-            text-transform: uppercase; margin-bottom: 10px;
+            font-size: 0.75em;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: 800;
         }
-        .progress-bar { background: #f2f2f2; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 20px;}
-        #progress-fill { background: var(--accent); height: 100%; width: 0%; transition: 0.5s ease; }
-        .question-text { font-size: 17px; font-weight: 600; line-height: 1.5; margin-bottom: 20px; min-height: 60px; color: #444; }
-        .options-grid { display: grid; gap: 8px; }
-        .opt-btn {
-            padding: 14px; border: 2px solid #fafafa; border-radius: 15px;
-            background: #fff; cursor: pointer; text-align: left; font-size: 15px; transition: 0.2s; color: var(--text);
+
+        .q-text { font-size: 1.3em; font-weight: 700; color: #212121; line-height: 1.4; }
+
+        #feedback-area {
+            height: 45px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
         }
-        .opt-btn:hover:not(:disabled) { border-color: var(--blue); background: #fdfdff; }
-        .correct { background-color: var(--success) !important; border-color: var(--success); }
-        .wrong { background-color: var(--danger) !important; border-color: var(--danger); }
-        .footer-info { margin-top: 20px; display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; color: #bbb; }
-        .report-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 14px; }
-        .pass { color: #2ecc71; font-weight: bold; }
-        .fail { color: #e74c3c; font-weight: bold; }
-        .btn-restart { width: 100%; padding: 15px; background: var(--lavender); border: none; border-radius: 15px; font-weight: bold; cursor: pointer; margin-top: 20px; color: #6a5acd; }
+        
+        .fb-correct { color: var(--correct); background-color: rgba(200, 230, 201, 0.3); opacity: 1 !important; }
+        .fb-wrong { color: var(--wrong); background-color: rgba(255, 205, 210, 0.3); opacity: 1 !important; }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        @media (max-width: 500px) { .options-grid { grid-template-columns: 1fr; } }
+
+        .btn-option {
+            background: white;
+            border: 2px solid #cfd8dc;
+            padding: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.05em;
+            font-weight: 600;
+            color: var(--text);
+            text-align: left;
+        }
+        .btn-option:hover:not(:disabled) { border-color: var(--primary); background: #e0f2f1; transform: translateY(-2px); }
+        
+        .btn-option.correct { background-color: var(--correct-bg) !important; border-color: var(--correct) !important; color: #1b5e20; }
+        .btn-option.wrong { background-color: var(--wrong-bg) !important; border-color: var(--wrong) !important; color: #b71c1c; }
+        .btn-option:disabled { cursor: default; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        .shake-element { animation: shake 0.4s; }
+
+        .result-card { text-align: center; padding: 40px 20px; display: none; }
+        .score-circle {
+            width: 140px; height: 140px; background: var(--primary); color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 2.5em; font-weight: bold; margin: 0 auto 20px;
+            border: 5px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .btn-restart {
+            background: var(--primary-dark); color: white; border: none;
+            padding: 15px 40px; font-size: 1.1em; border-radius: 50px;
+            cursor: pointer; margin-top: 20px; font-weight: bold;
+            transition: 0.2s;
+        }
+        .btn-restart:hover { background: #006064; transform: scale(1.05); }
+
+        .mistake-log { text-align: left; margin-top: 30px; background: #fff3e0; padding: 20px; border-radius: 15px; max-height: 400px; overflow-y: auto; }
+        .mistake-item { border-bottom: 1px solid #ffe0b2; padding: 12px 0; font-size: 0.95em; }
     </style>
 </head>
 <body>
-<div class="quiz-container">
-    <div id="game-view">
-        <div class="header">
-            <span id="cat-label" class="category-tag">Đang tải...</span>
-            <div class="progress-bar"><div id="progress-fill"></div></div>
+
+<div class="container" id="main-container">
+    <header>
+        <h1>LUẬT NAIL OREGON 2024</h1>
+        <div class="subtitle" id="cat-label">PHẦN: ĐANG TẢI...</div>
+    </header>
+
+    <div id="game-screen">
+        <div class="stats">
+            <span id="progress-text">CÂU: 0/90</span>
+            <span id="score-text">ĐÚNG: 0</span>
         </div>
-        <div id="q-text" class="question-text">Vui lòng chờ...</div>
-        <div id="options-area" class="options-grid"></div>
-        <div class="footer-info">
-            <span>CÂU: <span id="cur-idx">0</span>/90</span>
-            <span>ĐÚNG: <span id="score-val">0</span></span>
+        <div class="game-content">
+            <div class="question-card">
+                <div id="q-text" class="q-text">Vui lòng chờ...</div>
+            </div>
+            <div id="feedback-area"></div>
+            <div id="options-area" class="options-grid"></div>
         </div>
     </div>
-    <div id="report-view" style="display:none">
-        <h2 style="text-align:center; color:#555;">📊 KẾT QUẢ THI THỬ</h2>
-        <div id="final-status" style="text-align:center; font-size:24px; margin-bottom:10px;"></div>
-        <div id="final-desc" style="text-align:center; font-size:16px; color:#999; margin-bottom:20px;"></div>
-        <div id="report-details"></div>
-        <button class="btn-restart" onclick="location.reload()">LÀM BÀI MỚI</button>
+
+    <div id="result-screen" class="result-card">
+        <div class="score-circle" id="final-score">0%</div>
+        <h2 id="final-status"></h2>
+        <p id="final-msg"></p>
+        <div id="mistake-list" class="mistake-log" style="display:none;"></div>
+        <button class="btn-restart" onclick="location.reload()">THI LẠI MỚI</button>
     </div>
 </div>
 
 <script>
-// --- DATABASE 188 CÂU HỎI ĐẦY ĐỦ ---
 const db = [
-    // ĐIỀU 005: ĐỊNH NGHĨA
+    // (Dữ liệu 188 câu hỏi của bạn được giữ nguyên hoàn toàn ở đây)
     { c: "Định nghĩa", q: "1. Thông gió phù hợp (Adequate ventilation) nghĩa là gì?", o: ["Chỉ thông gió tự nhiên", "Chỉ thông gió cơ học", "Thông gió tự nhiên hoặc cơ học để loại bỏ khí độc", "Dùng quạt trần"], a: 2 },
     { c: "Định nghĩa", q: "2. Văn bản gốc xác minh lịch sử giấy phép và kỷ luật gọi là gì?", o: ["Giấy phép", "Affidavit of Licensure", "Bằng cấp", "Hồ sơ cá nhân"], a: 1 },
     { c: "Định nghĩa", q: "3. Cơ quan cấp bằng sức khỏe Oregon (Agency) còn gọi là:", o: ["OSHA", "FDA", "SDS", "OHLA"], a: 3 },
@@ -129,8 +250,6 @@ const db = [
     { c: "Định nghĩa", q: "32. Dụng cụ cầm tay như lược, kéo gọi là:", o: ["Thiết bị", "Bần", "Vật liệu", "Công cụ và dụng cụ"], a: 3 },
     { c: "Định nghĩa", q: "32A. Công cụ và thiết bị bao gồm:", o: ["Kéo", "Lược", "Tông đơ", "Tất cả đúng"], a: 3 },
     { c: "Định nghĩa", q: "33. Khu vực gội đầu, bàn làm việc, pha chế gọi là khu vực làm việc. Đúng hay Sai?", o: ["Đúng", "Sai"], a: 0 },
-
-    // ĐIỀU 010: TIÊU CHUẨN CƠ SỞ
     { c: "Cơ sở", q: "34. Người được cấp giấy phép phải tuân thủ quy định của thành phố, quận, tiểu bang. Đúng hay Sai?", o: ["Đúng", "Sai"], a: 0 },
     { c: "Cơ sở", q: "35. Phải tuân thủ quy định về thông gió của liên bang. Đúng hay Sai?", o: ["Đúng", "Sai"], a: 0 },
     { c: "Cơ sở", q: "36. Phải tuân theo luật Oregon Indoor Clean Air. Đúng hay Sai?", o: ["Đúng", "Sai"], a: 0 },
@@ -211,8 +330,6 @@ const db = [
     { c: "Cơ sở", q: "111. Sàn gỗ có lớp chống thấm được chấp nhận. Đúng hay Sai?", o: ["Đúng", "Sai"], a: 0 },
     { c: "Cơ sở", q: "112. Tóc cắt bỏ được để dồn lại cuối ngày mới vứt. Đúng hay Sai?", o: ["Đúng", "Sai (Phải bỏ ngay)"], a: 1 },
     { c: "Cơ sở", q: "113. Tường và trần nhà phải sạch, không nấm/ố. Đúng hay Sai?", o: ["Đúng", "Sai"], a: 0 },
-
-    // ĐIỀU 015 & 020: THỰC HÀNH & VẬN HÀNH
     { c: "Thực hành", q: "114. Thợ phải rửa tay khi nào?", o: ["Trước khi làm", "Sau khi làm", "Ngăn nhiễm bẩn", "Tất cả đúng"], a: 3 },
     { c: "Thực hành", q: "115. Tiếp xúc máu/lây nhiễm cần mang:", o: ["Kính", "Mặt nạ", "Bao tay 1 lần", "Quần áo"], a: 2 },
     { c: "Thực hành", q: "116. Khi bị chảy dịch cơ thể, thợ phải:", o: ["Đeo bao tay", "Chờ lành", "Từ chối phục vụ", "Dùng thuốc"], a: 2 },
@@ -249,8 +366,6 @@ const db = [
     { c: "Vận hành", q: "140. Thợ bị suy giảm miễn dịch phải:", o: ["Theo CDC", "Khám bác sỹ", "Theo OSHA", "Nghỉ làm"], a: 0 },
     { c: "Vận hành", q: "141. Cơ quan liên bang gồm EPA, FDA, OSHA, CDC. Đúng hay Sai?", o: ["Đúng", "Sai"], a: 0 },
     { c: "Vận hành", q: "142. Cơ quan tiểu bang gồm OHLA, ODOT. Đúng hay Sai?", o: ["Đúng", "Sai"], a: 0 },
-
-    // ĐIỀU 30 & 35: CHỨNG CHỈ
     { c: "Chứng chỉ", q: "143. Chứng chỉ hành nghề có giá trị:", o: ["2 năm", "1 năm", "30 ngày", "45 ngày"], a: 0 },
     { c: "Chứng chỉ", q: "144. Chứng chỉ hành nghề phải:", o: ["Niêm yết công khai (che địa chỉ)", "Cất giữ", "Cả hai đúng", "Cả hai sai"], a: 0 },
     { c: "Chứng chỉ", q: "145. Điểm đậu luật Oregon là:", o: ["30 ngày", "1 năm", "3 năm", "75% trở lên"], a: 3 },
@@ -280,8 +395,6 @@ const db = [
     { c: "Chứng chỉ", q: "169. Giấy phép trình diễn/cơ sở tạm thời gọi chung là:", o: ["Bằng", "Giấy phép", "Chứng chỉ", "Freelance"], a: 1 },
     { c: "Chứng chỉ", q: "170. Giấy phép hành nghề tạm thời tối đa 30 ngày. Đúng hay Sai?", o: ["Đúng", "Sai"], a: 0 },
     { c: "Chứng chỉ", q: "171. Cấp phép thực hành tối đa 30 ngày là:", o: ["Tạm thời", "Giấy phép", "Thợ", "Cơ sở"], a: 0 },
-
-    // ĐIỀU 60: HÓA CHẤT
     { c: "Hóa chất", q: "172. Chất oxy hóa/ăn mòn gây phản ứng nguy hiểm. Đúng hay Sai?", o: ["Đúng", "Sai"], a: 0 },
     { c: "Hóa chất", q: "173. Hóa chất nguy hại cất giữ:", o: ["Xa chất oxy hóa", "Xa lửa", "Thùng an toàn", "Tất cả đúng"], a: 3 },
     { c: "Hóa chất", q: "174. Gây phản ứng bất ngờ/cháy nổ gọi là:", o: ["Hiểm họa (Hazardous)", "Nguy hiểm", "Cả hai đúng", "Sai"], a: 2 },
@@ -301,56 +414,119 @@ const db = [
     { c: "Hóa chất", q: "188. Tài liệu thông báo hóa chất độc hại là:", o: ["Nhãn", "Khóa học", "MSDS", "DSMS"], a: 2 }
 ];
 
-let examSet = []; let current = 0; let score = 0; let mistakes = {};
+let examSet = []; let current = 0; let score = 0; let mistakes = [];
 
 function start() {
-    // Trộn ngẫu nhiên và lấy 90 câu để thi
+    current = 0; score = 0; mistakes = [];
+    document.getElementById("game-screen").style.display = "block";
+    document.getElementById("result-screen").style.display = "none";
+    
+    // Trộn 188 câu và lấy 90 câu
     examSet = [...db].sort(() => 0.5 - Math.random()).slice(0, 90);
     render();
 }
 
 function render() {
-    const q = examSet[current];
-    document.getElementById("cat-label").innerText = q.c;
-    document.getElementById("q-text").innerText = q.q;
-    document.getElementById("cur-idx").innerText = current + 1;
-    document.getElementById("progress-fill").style.width = `${((current + 1) / examSet.length) * 100}%`;
-    const area = document.getElementById("options-area"); area.innerHTML = "";
-    q.o.forEach((opt, i) => {
-        const b = document.createElement("button"); b.className = "opt-btn"; b.innerText = opt;
-        b.onclick = () => select(i, b); area.appendChild(b);
+    const qData = examSet[current];
+    document.getElementById("cat-label").innerText = `PHẦN: ${qData.c}`;
+    document.getElementById("q-text").innerText = qData.q;
+    document.getElementById("progress-text").innerText = `CÂU: ${current + 1}/${examSet.length}`;
+    document.getElementById("score-text").innerText = `ĐÚNG: ${score}`;
+    
+    const fbArea = document.getElementById("feedback-area");
+    fbArea.style.opacity = '0';
+    fbArea.className = "";
+
+    const area = document.getElementById("options-area");
+    area.innerHTML = "";
+    
+    qData.o.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.className = "btn-option";
+        btn.innerText = opt;
+        btn.onclick = () => handleSelect(i, btn);
+        area.appendChild(btn);
     });
 }
 
-function select(idx, b) {
-    const correct = examSet[current].a; const cat = examSet[current].c;
-    const btns = document.querySelectorAll(".opt-btn");
-    if(idx === correct) { b.classList.add("correct"); score++; }
-    else { b.classList.add("wrong"); btns[correct].classList.add("correct"); mistakes[cat] = (mistakes[cat] || 0) + 1; }
-    btns.forEach(b => b.disabled = true);
-    document.getElementById("score-val").innerText = score;
-    setTimeout(() => { 
-        current++; if(current < examSet.length) render(); else finish();
-    }, 1200);
+function handleSelect(idx, btn) {
+    const qData = examSet[current];
+    const correctIdx = qData.a;
+    const allBtns = document.querySelectorAll(".btn-option");
+    const fbArea = document.getElementById("feedback-area");
+    
+    allBtns.forEach(b => b.disabled = true);
+    fbArea.style.opacity = '1';
+
+    if(idx === correctIdx) {
+        score++;
+        btn.classList.add("correct");
+        fbArea.innerText = "CHÍNH XÁC! (CORRECT)";
+        fbArea.classList.add("fb-correct");
+    } else {
+        btn.classList.add("wrong");
+        allBtns[correctIdx].classList.add("correct");
+        fbArea.innerText = "SAI RỒI! (WRONG)";
+        fbArea.classList.add("fb-wrong");
+        
+        // Rung màn hình khi sai
+        const container = document.getElementById('main-container');
+        container.classList.add('shake-element');
+        setTimeout(() => container.classList.remove('shake-element'), 500);
+
+        mistakes.push({
+            q: qData.q,
+            selected: qData.o[idx],
+            correct: qData.o[correctIdx]
+        });
+    }
+
+    setTimeout(() => {
+        current++;
+        if(current < examSet.length) render();
+        else finish();
+    }, 1800);
 }
 
 function finish() {
-    document.getElementById("game-view").style.display = "none";
-    document.getElementById("report-view").style.display = "block";
+    document.getElementById("game-screen").style.display = "none";
+    document.getElementById("result-screen").style.display = "block";
+    
     const pct = Math.round((score / examSet.length) * 100);
-    const pass = pct >= 75;
-    document.getElementById("final-status").innerHTML = pass ? '<span class="pass">🎉 ĐẬU (PASS)</span>' : '<span class="fail">❌ CHƯA ĐẠT (FAIL)</span>';
-    document.getElementById("final-desc").innerText = `Kết quả: ${pct}% (${score}/${examSet.length} câu đúng)`;
-    const details = document.getElementById("report-details"); details.innerHTML = "<p><b>Thống kê lỗi sai:</b></p>";
-    const categories = ["Định nghĩa", "Cơ sở", "Thực hành", "Vận hành", "Chứng chỉ", "Hóa chất"];
-    categories.forEach(c => {
-        const errCount = mistakes[c] || 0;
-        const row = document.createElement("div"); row.className = "report-row";
-        row.innerHTML = `<span>Phần ${c}:</span><span class="${errCount > 0 ? 'fail' : 'pass'}">Sai ${errCount} câu</span>`;
-        details.appendChild(row);
-    });
+    document.getElementById("final-score").innerText = `${pct}%`;
+    
+    const status = document.getElementById("final-status");
+    const msg = document.getElementById("final-msg");
+    const list = document.getElementById("mistake-list");
+
+    if(pct >= 75) {
+        status.innerText = "CHÚC MỪNG! BẠN ĐÃ ĐẬU";
+        status.style.color = "var(--correct)";
+        msg.innerText = `Bạn đã trả lời đúng ${score}/${examSet.length} câu.`;
+    } else {
+        status.innerText = "RẤT TIẾC! CHƯA ĐẠT";
+        status.style.color = "var(--wrong)";
+        msg.innerText = `Kết quả ${score}/${examSet.length}. Cố gắng luyện tập thêm nhé!`;
+    }
+
+    if(mistakes.length > 0) {
+        list.style.display = 'block';
+        list.innerHTML = '<h3>CÁC CÂU BẠN ĐÃ TRẢ LỜI SAI:</h3>';
+        mistakes.forEach(m => {
+            list.innerHTML += `
+                <div class="mistake-item">
+                    <strong>Hỏi:</strong> ${m.q}<br>
+                    <span style="color:var(--wrong)">Bạn chọn: ${m.selected}</span><br>
+                    <span style="color:var(--correct)">Đáp án đúng: ${m.correct}</span>
+                </div>`;
+        });
+    } else {
+        list.style.display = 'none';
+    }
 }
+
 start();
 </script>
+
 </body>
 </html>
